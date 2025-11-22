@@ -15,6 +15,7 @@ import deliveriesRoutes from "./routes/deliveries.routes.js";
 import warehousesRoutes from "./routes/warehouses.routes.js";
 import notificationsRoutes from "./routes/notifications.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import cloudinaryRoutes from "./routes/cloudinary.routes.js";
 import storiesRoutes from "./routes/stories.routes.js";
 import connectDB from './config/connectDB.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -49,6 +50,7 @@ app.use('/api/deliveries', deliveriesRoutes);
 app.use('/api/warehouses', warehousesRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/cloudinary', cloudinaryRoutes);
 app.use('/api/stories', storiesRoutes);
 
 // Error handler (must be last)
