@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema({
     code: String,
     expiresAt: Date,
   },
+  resetPasswordToken: {
+    type: String,
+    select: false,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    select: false,
+  },
   refreshToken: {
     type: String,
     select: false,
@@ -198,6 +206,8 @@ userSchema.methods.toJSON = function() {
   delete obj.password;
   delete obj.refreshToken;
   delete obj.otp;
+  delete obj.resetPasswordToken;
+  delete obj.resetPasswordExpires;
   return obj;
 };
 
