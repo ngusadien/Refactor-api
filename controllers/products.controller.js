@@ -88,7 +88,7 @@ export const getProductById = async (req, res, next) => {
 // Create new product
 export const uploadProduct = async (req, res, next) => {
   try {
-    const { title, description, price, category, stock, sku, tags } = req.body;
+    const { title, description, price, category, stock, sku, tags, image, imagePublicId, images } = req.body;
 
     const productData = {
       title,
@@ -116,12 +116,19 @@ export const uploadProduct = async (req, res, next) => {
     if (sku) productData.sku = sku;
     if (tags) productData.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
 
-    if (req.file) {
-      productData.image = `/uploads/${req.file.filename}`;
+    // Accept Cloudinary image URL from request body
+    if (image) {
+      productData.image = image;
     }
 
-    if (req.files && req.files.length > 0) {
-      productData.images = req.files.map(file => `/uploads/${file.filename}`);
+    // Store Cloudinary public ID for later deletion if needed
+    if (imagePublicId) {
+      productData.imagePublicId = imagePublicId;
+    }
+
+    // Accept multiple Cloudinary image URLs if provided
+    if (images && Array.isArray(images)) {
+      productData.images = images;
     }
 
     const product = await Product.create(productData);
@@ -162,9 +169,8 @@ export const updateProduct = async (req, res, next) => {
       }
     }
 
-    if (req.file) {
-      updates.image = `/uploads/${req.file.filename}`;
-    }
+    // Image and imagePublicId are already in req.body from Cloudinary upload
+    // No need to handle file uploads here
 
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,

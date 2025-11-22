@@ -1,9 +1,11 @@
+import dotenv from 'dotenv'
+dotenv.config();
+
 import express from 'express';
 import mongoose from 'mongoose'
 import cors from 'cors'
 import morgan from 'morgan'
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
 import fs from 'fs'
 
 import productRoutes from "./routes/products.routes.js";
@@ -21,7 +23,6 @@ import connectDB from './config/connectDB.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
-dotenv.config();
 
 
 app.use(cors());

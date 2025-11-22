@@ -11,7 +11,16 @@ export const uploadImageToCloud = async (req, res, next) => {
 
     // Get optional parameters from request body
     const folder = req.body.folder || 'sokoni';
-    const tags = req.body.tags ? JSON.parse(req.body.tags) : [];
+    let tags = [];
+    if (req.body.tags) {
+      try {
+        tags = JSON.parse(req.body.tags);
+      } catch (parseError) {
+        return res.status(400).json({
+          message: 'Invalid tags format. Tags must be valid JSON array.'
+        });
+      }
+    }
 
     // Upload to Cloudinary
     const result = await uploadToCloudinary(req.file.buffer, {
@@ -46,7 +55,16 @@ export const uploadMultipleToCloud = async (req, res, next) => {
 
     // Get optional parameters from request body
     const folder = req.body.folder || 'sokoni';
-    const tags = req.body.tags ? JSON.parse(req.body.tags) : [];
+    let tags = [];
+    if (req.body.tags) {
+      try {
+        tags = JSON.parse(req.body.tags);
+      } catch (parseError) {
+        return res.status(400).json({
+          message: 'Invalid tags format. Tags must be valid JSON array.'
+        });
+      }
+    }
 
     // Upload all files to Cloudinary
     const uploadPromises = req.files.map(file =>

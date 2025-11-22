@@ -1,12 +1,24 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true
-});
+// Initialize Cloudinary configuration
+let isConfigured = false;
+
+const ensureCloudinaryConfigured = () => {
+  if (!isConfigured) {
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      throw new Error('Cloudinary credentials are missing. Please check your .env file.');
+    }
+
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+      secure: true
+    });
+
+    isConfigured = true;
+  }
+};
 
 /**
  * Upload buffer to Cloudinary
@@ -16,6 +28,9 @@ cloudinary.config({
  */
 const uploadToCloudinary = (fileBuffer, options = {}) => {
   return new Promise((resolve, reject) => {
+    // Ensure Cloudinary is configured before upload
+    ensureCloudinaryConfigured();
+
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: options.folder || 'sokoni',
@@ -51,6 +66,9 @@ const uploadToCloudinary = (fileBuffer, options = {}) => {
  */
 const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
   try {
+    // Ensure Cloudinary is configured before delete
+    ensureCloudinaryConfigured();
+
     const result = await cloudinary.uploader.destroy(publicId, {
       resource_type: resourceType
     });
@@ -68,6 +86,9 @@ const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
  */
 const deleteMultipleFromCloudinary = async (publicIds, resourceType = 'image') => {
   try {
+    // Ensure Cloudinary is configured before delete
+    ensureCloudinaryConfigured();
+
     const result = await cloudinary.api.delete_resources(publicIds, {
       resource_type: resourceType
     });
